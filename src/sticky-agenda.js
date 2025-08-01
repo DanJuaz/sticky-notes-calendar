@@ -1,3 +1,10 @@
+/*!
+ * StickyAgenda.js
+ * Copyright (c) 2025 Julio Daniel Azurduy Montalvo
+ * Released under the MIT License
+ * https://github.com/DanJuaz/sticky-notes-calendar
+ */
+
 /**
  * StickyAgenda - Librería JavaScript para gestión de notas tipo post-it
  * Clase principal que coordina todos los componentes

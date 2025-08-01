@@ -1,3 +1,10 @@
+/*!
+ * StickyAgenda.js
+ * Copyright (c) 2025 Julio Daniel Azurduy Montalvo
+ * Released under the MIT License
+ * https://github.com/DanJuaz/sticky-notes-calendar
+ */
+
 /**
  * Renderizador de notas para StickyAgenda
  * Maneja la creación y actualización del HTML de las notas
