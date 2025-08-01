@@ -15,8 +15,6 @@ class Todo {
         this.id = data.id || this.generateId();
         this.text = data.text || '';
         this.completed = data.completed || false;
-        this.createdAt = data.createdAt || window.StickyAgendaDateHelpers.now();
-        this.completedAt = data.completedAt || null;
 
         // Validar datos
         this.validate();
@@ -51,7 +49,6 @@ class Todo {
         if (this.completed) return this;
 
         this.completed = true;
-        this.completedAt = window.StickyAgendaDateHelpers.now();
         return this;
     }
 
@@ -62,7 +59,6 @@ class Todo {
         if (!this.completed) return this;
 
         this.completed = false;
-        this.completedAt = null;
         return this;
     }
 
@@ -85,9 +81,7 @@ class Todo {
         return {
             id: this.id,
             text: this.text,
-            completed: this.completed,
-            createdAt: this.createdAt,
-            completedAt: this.completedAt
+            completed: this.completed
         };
     }
 
@@ -112,35 +106,7 @@ class Todo {
         return this.completed ? 'Completado' : 'Pendiente';
     }
 
-    /**
-     * Verifica si el todo fue completado recientemente (últimas 24h)
-     */
-    isRecentlyCompleted() {
-        if (!this.completed || !this.completedAt) return false;
 
-        const completedDate = new Date(this.completedAt);
-        const now = new Date();
-        const diffHours = (now - completedDate) / (1000 * 60 * 60);
-
-        return diffHours <= 24;
-    }
-
-    /**
-     * Obtiene el tiempo transcurrido desde la creación
-     */
-    getTimeAgo() {
-        if (!window.StickyAgendaDateHelpers) return '';
-        return window.StickyAgendaDateHelpers.timeAgo(this.createdAt);
-    }
-
-    /**
-     * Obtiene el tiempo transcurrido desde que se completó
-     */
-    getCompletedTimeAgo() {
-        if (!this.completed || !this.completedAt) return '';
-        if (!window.StickyAgendaDateHelpers) return '';
-        return window.StickyAgendaDateHelpers.timeAgo(this.completedAt);
-    }
 
     /**
      * Verifica si el todo coincide con un criterio de búsqueda
@@ -160,13 +126,9 @@ class Todo {
             id: this.id,
             textLength: this.text.length,
             completed: this.completed,
-            createdAt: this.createdAt,
-            completedAt: this.completedAt
         };
 
-        if (this.completed && this.completedAt) {
-            const createdDate = new Date(this.createdAt);
-            const completedDate = new Date(this.completedAt);
+        if (this.completed) {
             stats.timeToComplete = completedDate - createdDate; // milliseconds
             stats.timeToCompleteHours = stats.timeToComplete / (1000 * 60 * 60);
         }

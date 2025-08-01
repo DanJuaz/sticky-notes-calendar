@@ -23,17 +23,15 @@ class Note {
         this.createdAt = data.createdAt || window.StickyAgendaDateHelpers.now();
         this.startDate = data.startDate || null;
         this.endDate = data.endDate || null;
-        this.completedAt = data.completedAt || null;
         
         // Clasificación
         this.category = data.category || 'general';
-        this.priority = data.priority || 2; // 1=alta, 2=media, 3=baja
+        this.priority = data.priority || 2; // 1=high, 2=medium, 3=low
         this.tags = Array.isArray(data.tags) ? data.tags : [];
         
         // Estado y visualización
         this.status = data.status || 'pending';
         this.position = data.position || { x: 0, y: 0 };
-        this.color = data.color || '#ffeb3b';
         
         // To-do list interna
         this.todos = [];
@@ -62,13 +60,13 @@ class Note {
      */
     validate() {
         if (!window.StickyAgendaValidators) {
-            console.warn('Validators no disponibles');
+            console.warn('Validators not found');
             return;
         }
 
         const validation = window.StickyAgendaValidators.validateNote(this);
         if (!validation.isValid) {
-            throw new Error(`Nota inválida: ${validation.errors.join(', ')}`);
+            throw new Error(`Invalid note: ${validation.errors.join(', ')}`);
         }
     }
 
@@ -100,9 +98,6 @@ class Note {
             this.endDate = data.endDate;
         }
         
-        if (data.color !== undefined) {
-            this.color = data.color;
-        }
         
         if (data.tags !== undefined && Array.isArray(data.tags)) {
             this.tags = data.tags;
@@ -110,44 +105,6 @@ class Note {
 
         // Re-validar después de actualizar
         this.validate();
-        return this;
-    }
-
-    /**
-     * Marca la nota como completada
-     */
-    markAsCompleted() {
-        if (this.status === 'completed') return this;
-
-        this.status = 'completed';
-        this.completedAt = window.StickyAgendaDateHelpers.now();
-        return this;
-    }
-
-    /**
-     * Marca la nota como pendiente
-     */
-    markAsPending() {
-        if (this.status === 'pending') return this;
-
-        this.status = 'pending';
-        this.completedAt = null;
-        return this;
-    }
-
-    /**
-     * Archiva la nota
-     */
-    archive() {
-        this.status = 'archived';
-        return this;
-    }
-
-    /**
-     * Actualiza la posición de la nota
-     */
-    updatePosition(x, y) {
-        this.position = { x: Number(x), y: Number(y) };
         return this;
     }
 
@@ -248,25 +205,25 @@ class Note {
     /**
      * Obtiene la prioridad como texto
      */
-    getPriorityText() {
+    getPriorityText(language = 'es') {
         const priorities = {
-            1: 'Alta',
-            2: 'Media',
-            3: 'Baja'
+            1: { es: 'Alta', en: 'High' },
+            2: { es: 'Media', en: 'Medium' },
+            3: { es: 'Baja', en: 'Low' }
         };
-        return priorities[this.priority] || 'Media';
+        return priorities[this.priority]?.[language] || priorities[2].es;
     }
 
     /**
      * Obtiene el estado como texto
      */
-    getStatusText() {
+    getStatusText(language = 'es') {
         const statuses = {
-            'pending': 'Pendiente',
-            'completed': 'Completada',
-            'archived': 'Archivada'
+            'pending': { es: 'Pendiente', en: 'Pending' },
+            'completed': { es: 'Completada', en: 'Completed' },
+            'archived': { es: 'Archivada', en: 'Archived' }
         };
-        return statuses[this.status] || 'Pendiente';
+        return statuses[this.status]?.[language] || statuses['pending'].es;
     }
 
     // === FILTROS Y BÚSQUEDAS ===
@@ -359,20 +316,6 @@ class Note {
             todos: this.todos.map(todo => todo.toJSON()),
             attachments: [...this.attachments]
         };
-    }
-
-    /**
-     * Crea una copia de la nota
-     */
-    clone() {
-        return new Note(this.toJSON());
-    }
-
-    /**
-     * Crea una nota desde datos planos
-     */
-    static fromJSON(data) {
-        return new Note(data);
     }
 
     /**

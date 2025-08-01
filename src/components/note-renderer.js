@@ -22,6 +22,8 @@ class NoteRenderer {
             dateFormat: config.dateFormat || 'DD/MM/YYYY',
             maxTitleLength: config.maxTitleLength || 50,
             maxDescriptionLength: config.maxDescriptionLength || 150,
+            language: config.language || 'es',
+            getText: config.getText || ((key) => key),
             ...config
         };
 
@@ -116,9 +118,10 @@ class NoteRenderer {
      * Renderiza el autor de la nota
      */
     renderAuthor(note) {
+        const byText = this.config.language === 'en' ? 'by' : 'por';
         return `
             <p class="text-sm text-gray-100 mt-1">
-                por ${this.escapeHtml(note.author)}
+                ${byText} ${this.escapeHtml(note.author)}
             </p>
         `;
     }
@@ -128,16 +131,16 @@ class NoteRenderer {
      */
     renderPriorityBadge(note) {
         const priorities = {
-            1: { text: 'Highz', text_es: 'Alta', class: 'text-red-500' },
-            2: { text: 'Media', text_es: 'Media', class: 'text-yellow-500' },
-            3: { text: 'Baja', text_es: 'Baja', class: 'text-green-500' }
+            1: { textKey: 'priorityHigh', class: 'text-red-500' },
+            2: { textKey: 'priorityMedium', class: 'text-yellow-500' },
+            3: { textKey: 'priorityLow', class: 'text-green-500' }
         };
 
         const priority = priorities[note.priority] || priorities[2];
 
         return `
             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-50 ${priority.class}">
-                ${priority.text}
+                ${this.config.getText(priority.textKey)}
             </span>
         `;
     }
@@ -189,13 +192,14 @@ class NoteRenderer {
         let datesHtml = '<div class="dates text-xs text-gray-500 mb-2">';
 
         if (note.startDate) {
+            const startText = this.config.getText('startDate');
             datesHtml += `
                 <div class="flex items-center mb-1">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
-                    <span>Inicio: ${formatDate(note.startDate)}</span>
+                    <span>${startText}: ${formatDate(note.startDate)}</span>
                 </div>
             `;
         }
@@ -215,9 +219,9 @@ class NoteRenderer {
                               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     <span class="${endClass}">
-                        Fin: ${formatDate(note.endDate)}
-                        ${isOverdue ? ' (Vencida)' : ''}
-                        ${isDueToday ? ' (Hoy)' : ''}
+                        ${this.config.getText('endDate')}: ${formatDate(note.endDate)}
+                        ${isOverdue ? ` (${this.config.getText('overdue')})` : ''}
+                        ${isDueToday ? ` (${this.config.getText('dueToday')})` : ''}
                     </span>
                 </div>
             `;
@@ -258,7 +262,7 @@ class NoteRenderer {
         return `
             <div class="todos mb-3">
                 <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-sm font-medium text-gray-700">Tareas</h4>
+                    <h4 class="text-sm font-medium text-gray-700">${this.config.getText('tasks')}</h4>
                     <span class="text-xs text-gray-500">${progress}%</span>
                 </div>
                 
@@ -309,7 +313,7 @@ class NoteRenderer {
                     <span class="text-xs text-gray-400 ml-2">
                         ${window.StickyAgendaDateHelpers ? 
                           window.StickyAgendaDateHelpers.timeAgo(todo.completedAt) : 
-                          'completado'}
+                          (this.config.language === 'en' ? 'completed' : 'completado')}
                     </span>
                 ` : ''}
             </div>
@@ -328,12 +332,12 @@ class NoteRenderer {
         return `
             <div class="note-footer text-xs text-gray-400 mb-2">
                 <div class="flex items-center justify-between">
-                    <span>Creada ${createdAgo}</span>
+                    <span>${this.config.getText('createdAgo')} ${createdAgo}</span>
                     ${note.status === 'completed' && note.completedAt ? `
                         <span class="text-green-600">
-                            ✓ Completada ${dateHelpers ? 
+                            ✓ ${this.config.getText('completedAgo')} ${dateHelpers ? 
                                 dateHelpers.timeAgo(note.completedAt) : 
-                                'recientemente'}
+                                (this.config.language === 'en' ? 'recently' : 'recientemente')}
                         </span>
                     ` : ''}
                 </div>

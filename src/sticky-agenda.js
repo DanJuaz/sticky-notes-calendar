@@ -15,6 +15,7 @@ class StickyAgenda {
 
         // Textos bilingües
         this.texts = {
+            // Navegación temporal
             yesterday: { en: 'YESTERDAY', es: 'AYER' },
             today: { en: 'TODAY', es: 'HOY' },
             tomorrow: { en: 'TOMORROW', es: 'MAÑANA' },
@@ -24,9 +25,97 @@ class StickyAgenda {
             lastMonth: { en: 'LAST MONTH', es: 'MES PASADO' },
             thisMonth: { en: 'THIS MONTH', es: 'ESTE MES' },
             nextMonth: { en: 'NEXT MONTH', es: 'PRÓXIMO MES' },
+            
+            // Modos de vista
             day: { en: 'Day', es: 'Día' },
             week: { en: 'Week', es: 'Semana' },
-            month: { en: 'Month', es: 'Mes' }
+            month: { en: 'Month', es: 'Mes' },
+            
+            // Estados y mensajes generales
+            noNotes: { en: 'No notes', es: 'Sin notas' },
+            noNotesDay: { en: 'No notes for this day', es: 'No hay notas para este día' },
+            noNotesWeek: { en: 'No notes for this week', es: 'No hay notas para esta semana' },
+            noNotesMonth: { en: 'No notes for this month', es: 'No hay notas para este mes' },
+            noNotesCreated: { en: 'No notes created', es: 'No hay notas creadas' },
+            noNotesFiltered: { en: 'No notes found with applied filters', es: 'No se encontraron notas con los filtros aplicados' },
+            
+            // Contadores
+            note: { en: 'note', es: 'nota' },
+            notes: { en: 'notes', es: 'notas' },
+            completed: { en: 'completed', es: 'completada' },
+            completedPlural: { en: 'completed', es: 'completadas' },
+            showing: { en: 'Showing', es: 'Mostrando' },
+            of: { en: 'of', es: 'de' },
+            
+            // Fechas relativas
+            createdAgo: { en: 'Created', es: 'Creada' },
+            completedAgo: { en: 'Completed', es: 'Completada' },
+            
+            // Prioridades
+            priorityHigh: { en: 'High', es: 'Alta' },
+            priorityMedium: { en: 'Medium', es: 'Media' },
+            priorityLow: { en: 'Low', es: 'Baja' },
+            
+            // Acciones
+            edit: { en: 'Edit', es: 'Editar' },
+            delete: { en: 'Delete', es: 'Eliminar' },
+            complete: { en: 'Complete', es: 'Completar' },
+            save: { en: 'Save', es: 'Guardar' },
+            cancel: { en: 'Cancel', es: 'Cancelar' },
+            
+            // Campos de formulario
+            title: { en: 'Title', es: 'Título' },
+            description: { en: 'Description', es: 'Descripción' },
+            category: { en: 'Category', es: 'Categoría' },
+            priority: { en: 'Priority', es: 'Prioridad' },
+            author: { en: 'Author', es: 'Autor' },
+            
+            // Fechas
+            startDate: { en: 'Start', es: 'Inicio' },
+            endDate: { en: 'End', es: 'Fin' },
+            dueDate: { en: 'Due', es: 'Vence' },
+            overdue: { en: 'Overdue', es: 'Vencida' },
+            dueToday: { en: 'Due today', es: 'Vence hoy' },
+            
+            // Tareas
+            tasks: { en: 'Tasks', es: 'Tareas' },
+            task: { en: 'Task', es: 'Tarea' },
+            addTask: { en: 'Add task', es: 'Añadir tarea' },
+            
+            // Filtros
+            searchPlaceholder: { en: 'Search notes...', es: 'Buscar notas...' },
+            filterBy: { en: 'Filter by', es: 'Filtrar por' },
+            allCategories: { en: 'All categories', es: 'Todas las categorías' },
+            allPriorities: { en: 'All priorities', es: 'Todas las prioridades' },
+            allStatuses: { en: 'All statuses', es: 'Todos los estados' },
+            
+            // Estados de notas
+            active: { en: 'Active', es: 'Activa' },
+            pending: { en: 'Pending', es: 'Pendiente' },
+            inProgress: { en: 'In Progress', es: 'En Progreso' },
+            
+            // Días de la semana (para DateHelpers)
+            monday: { en: 'Monday', es: 'Lunes' },
+            tuesday: { en: 'Tuesday', es: 'Martes' },
+            wednesday: { en: 'Wednesday', es: 'Miércoles' },
+            thursday: { en: 'Thursday', es: 'Jueves' },
+            friday: { en: 'Friday', es: 'Viernes' },
+            saturday: { en: 'Saturday', es: 'Sábado' },
+            sunday: { en: 'Sunday', es: 'Domingo' },
+            
+            // Meses (para DateHelpers)
+            january: { en: 'January', es: 'Enero' },
+            february: { en: 'February', es: 'Febrero' },
+            march: { en: 'March', es: 'Marzo' },
+            april: { en: 'April', es: 'Abril' },
+            may: { en: 'May', es: 'Mayo' },
+            june: { en: 'June', es: 'Junio' },
+            july: { en: 'July', es: 'Julio' },
+            august: { en: 'August', es: 'Agosto' },
+            september: { en: 'September', es: 'Septiembre' },
+            october: { en: 'October', es: 'Octubre' },
+            november: { en: 'November', es: 'Noviembre' },
+            december: { en: 'December', es: 'Diciembre' }
         };
 
         // Configuración
@@ -372,7 +461,9 @@ class StickyAgenda {
             showTodos: true,
             showTags: true,
             showPriority: true,
-            dateFormat: this.config.dateFormat
+            dateFormat: this.config.dateFormat,
+            language: this.config.language,
+            getText: (key) => this.getText(key)
         });
 
         // Filtros
@@ -502,7 +593,7 @@ class StickyAgenda {
                 </div>
                 
                 <div class="agenda-timeline space-y-3">
-                    ${todayNotes.length > 0 ? '' : '<div class="text-center py-8 text-gray-500">No hay notas para este día</div>'}
+                    ${todayNotes.length > 0 ? '' : `<div class="text-center py-8 text-gray-500">${this.getText('noNotesDay')}</div>`}
                 </div>
             </div>
         `;
@@ -676,13 +767,13 @@ class StickyAgenda {
         return `
             <div class="day-section bg-white rounded-lg border p-4">
                 <div class="section-header mb-4">
-                    <p class="text-sm text-gray-500">${notes.length} nota${notes.length !== 1 ? 's' : ''}</p>
+                    <p class="text-sm text-gray-500">${notes.length} ${notes.length === 1 ? this.getText('note') : this.getText('notes')}</p>
                 </div>
                 
                 <div class="notes-list space-y-3">
                     ${notes.length === 0 ? `
                         <div class="text-center py-8 text-gray-500">
-                            ${this.config.language === 'en' ? 'No notes for this day' : 'No hay notas para este día'}
+                            ${this.getText('noNotesDay')}
                         </div>
                     ` : ''}
                 </div>
@@ -704,14 +795,14 @@ class StickyAgenda {
         return `
             <div class="week-section bg-white rounded-lg border p-4">
                 <div class="section-header mb-4">
-                    <p class="text-sm text-gray-500"> ${notes.length} nota${notes.length !== 1 ? 's' : ''}
+                    <p class="text-sm text-gray-500">${notes.length} ${notes.length === 1 ? this.getText('note') : this.getText('notes')}
                     </p>
                 </div>
                 
                 <div class="notes-list space-y-3">
                     ${notes.length === 0 ? `
                         <div class="text-center py-8 text-gray-500">
-                            ${this.config.language === 'en' ? 'No notes for this week' : 'No hay notas para esta semana'}
+                            ${this.getText('noNotesWeek')}
                         </div>
                     ` : ''}
                 </div>
@@ -732,13 +823,13 @@ class StickyAgenda {
         return `
             <div class="month-section bg-white rounded-lg border p-4">
                 <div class="section-header mb-4">
-                    <p class="text-sm text-gray-500">${notes.length} nota${notes.length !== 1 ? 's' : ''}</p>
+                    <p class="text-sm text-gray-500">${notes.length} ${notes.length === 1 ? this.getText('note') : this.getText('notes')}</p>
                 </div>
                 
                 <div class="notes-list space-y-3">
                     ${notes.length === 0 ? `
                         <div class="text-center py-8 text-gray-500">
-                            ${this.config.language === 'en' ? 'No notes for this month' : 'No hay notas para este mes'}
+                            ${this.getText('noNotesMonth')}
                         </div>
                     ` : ''}
                 </div>
@@ -758,10 +849,10 @@ class StickyAgenda {
                               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No hay notas</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">${this.getText('noNotes')}</h3>
                 <p class="text-gray-500 mb-4">
                     ${Object.keys(this.currentFilters).some(key => this.currentFilters[key]) 
-                        ? 'No se encontraron notas con los filtros aplicados'
+                        ? this.getText('noNotesFiltered')
                         : ''}
                 </p>
             </div>
@@ -780,11 +871,13 @@ class StickyAgenda {
         const completed = this.notes.filter(note => note.status === 'completed').length;
 
         if (total === 0) {
-            counter.textContent = 'No hay notas creadas';
+            counter.textContent = this.getText('noNotesCreated');
         } else if (filtered !== total) {
-            counter.textContent = `Mostrando ${filtered} de ${total} notas • ${completed} completadas`;
+            counter.textContent = `${this.getText('showing')} ${filtered} ${this.getText('of')} ${total} ${this.getText('notes')} • ${completed} ${this.getText('completedPlural')}`;
         } else {
-            counter.textContent = `${total} nota${total !== 1 ? 's' : ''} • ${completed} completada${completed !== 1 ? 's' : ''}`;
+            const noteText = total === 1 ? this.getText('note') : this.getText('notes');
+            const completedText = completed === 1 ? this.getText('completed') : this.getText('completedPlural');
+            counter.textContent = `${total} ${noteText} • ${completed} ${completedText}`;
         }
     }
 
