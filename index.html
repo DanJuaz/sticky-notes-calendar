@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StickyAgenda - Demo Principal</title>
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Interact.js para Drag & Drop -->
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    
+    <!-- StickyAgenda CSS -->
+    <link rel="stylesheet" href="src/styles/sticky-agenda.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <h1>Esto se mostrará para el público</h1>
+        <!-- Contenedor principal de la agenda -->
+        <div id="agenda-container">
+            <!-- StickyAgenda se renderizará aquí -->
+        </div>
+    </main>
+
+    <!-- Scripts de StickyAgenda -->
+    <script src="src/utils/validators.js"></script>
+    <script src="src/utils/date-helpers.js"></script>
+    <script src="src/utils/storage.js"></script>
+    <script src="src/models/todo.js"></script>
+    <script src="src/models/note.js"></script>
+    <script src="src/components/filters.js"></script>
+    <script src="src/components/note-renderer.js"></script>
+    <script src="src/sticky-agenda.js"></script>
+
+    <script>
+        // Configuración inicial
+        let agenda;
+        let config = {
+            categories: ['general', 'personal', 'trabajo', 'urgente', 'estudio', 'salud']
+        };
+
+        // Datos de ejemplo para primera carga
+        const initialNotes = [
+            {
+                title: "Bienvenido a StickyAgenda",
+                description: "Esta es tu primera nota. Puedes editarla, completarla o eliminarla. ¡Explora todas las funcionalidades!",
+                author: "Mikel",
+                category: "general",
+                priority: 2,
+                color: "#ddd6fe",
+                tags: ["bienvenida", "tutorial"],
+                todos: [
+                    { text: "Explorar la interfaz", completed: false },
+                    { text: "Crear una nueva nota", completed: false },
+                    { text: "Probar los filtros", completed: false }
+                ]
+            },
+            {
+                title: "Bienvenido a StickyAgenda",
+                description: "Esta es tu primera nota. Puedes editarla, completarla o eliminarla. ¡Explora todas las funcionalidades!",
+                author: "Julio",
+                category: "general",
+                priority: 1,
+                color: "#ddd6fe",
+                tags: ["bienvenida", "tutorial"],
+            },
+            {
+                title: "Bienvenido a StickyAgenda",
+                description: "Esta es tu primera nota. Puedes editarla, completarla o eliminarla. ¡Explora todas las funcionalidades!",
+                author: "Gorka",
+                category: "general",
+                priority: 3,
+                color: "#ddd6fe",
+                tags: ["bienvenida", "tutorial"],
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            try {
+                
+                // Inicializar agenda
+                agenda = new StickyAgenda({
+                    container: '#agenda-container',
+                    data: initialNotes, // Solo usar datos iniciales si no hay datos guardados
+                    config: {
+                        showFilters: false,
+                        categories: config.categories,
+                        language: 'en',
+                    }
+                });
+
+
+            } catch (error) {
+                console.error('Error al inicializar la aplicación:', error);
+                showError('Error al inicializar la aplicación: ' + error.message);
+            }
+        }
+
+        // Exportar para debugging
+        window.agenda = agenda;
+        window.config = config;
+    </script>
+</body>
+</html>

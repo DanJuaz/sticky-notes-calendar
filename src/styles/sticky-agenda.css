@@ -1,0 +1,525 @@
+/**
+ * Estilos CSS para StickyAgenda
+ * Complementa TailwindCSS con estilos específicos
+ */
+
+/* === VARIABLES CSS === */
+:root {
+  --sticky-primary: #3b82f6;
+  --sticky-secondary: #6b7280;
+  --sticky-success: #10b981;
+  --sticky-warning: #f59e0b;
+  --sticky-error: #ef4444;
+  --sticky-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --sticky-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --sticky-transition: all 0.2s ease-in-out;
+}
+
+/* === CONTENEDOR PRINCIPAL === */
+.sticky-agenda {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.sticky-agenda-board {
+  min-height: 500px;
+  position: relative;
+  padding: 1rem;
+}
+
+/* Grid responsive para notas */
+.notes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .notes-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .notes-list {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+
+/* === NOTAS === */
+.sticky-note {
+  will-change: transform;
+  min-height: 200px;
+  max-width: 350px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.sticky-note:hover {
+  transform: translateY(-2px);
+}
+
+/* Estados de drag & drop */
+.sticky-note.dragging {
+  z-index: 1000;
+  transform: rotate(5deg) scale(1.05);
+  box-shadow: var(--sticky-shadow-lg);
+}
+
+.sticky-note.drag-disabled {
+  cursor: default !important;
+}
+
+.drag-active .sticky-note:not(.dragging) {
+  opacity: 0.7;
+}
+
+/* Long press en mobile */
+.sticky-note.long-press-active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* === COMPONENTES DE NOTA === */
+.note-header {
+  user-select: none;
+  cursor: grab;
+}
+
+.note-header:active {
+  cursor: grabbing;
+}
+
+.note-body {
+  user-select: text;
+  cursor: auto;
+}
+
+/* Descripción expandible */
+.description .expand-text {
+  display: none;
+}
+
+.description.expanded .expand-text {
+  display: inline;
+}
+
+.description.expanded .truncated-text {
+  display: none;
+}
+
+/* === TODOS === */
+.todos-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.todo-item {
+  cursor: pointer;
+}
+
+.todo-item:hover {
+  background-color: rgba(243, 244, 246, 0.5);
+}
+
+.todo-checkbox {
+  flex-shrink: 0;
+}
+
+.todo-checkbox:checked + span {
+  text-decoration: line-through;
+  color: #6b7280;
+}
+
+/* Barra de progreso de todos */
+.todos-progress {
+  height: 4px;
+  background-color: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.todos-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sticky-success), #34d399);
+  transition: width 0.3s ease;
+}
+
+/* === FILTROS === */
+.sticky-agenda-filters {
+  backdrop-filter: blur(10px);
+}
+
+.filters-content {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.filters-content.hidden {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+#filters-chevron {
+  transition: transform 0.2s ease;
+}
+
+#filters-chevron.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* Indicador de filtros activos */
+.filter-active {
+  position: relative;
+}
+
+.filter-active::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--sticky-primary);
+  border-radius: 50%;
+}
+
+/* === ACCIONES === */
+.note-actions {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sticky-note:hover .note-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  font-size: 0.75rem;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+/* === BADGES Y TAGS === */
+.priority-badge {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.tag::before {
+  content: '#';
+  margin-right: 2px;
+  opacity: 0.7;
+}
+
+/* === ESTADOS ESPECIALES === */
+.note-overdue {
+  border-left-color: var(--sticky-error) !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
+}
+
+.note-due-today {
+  border-left-color: var(--sticky-primary) !important;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.note-completed {
+  opacity: 0.6;
+  background-color: #f9fafb;
+}
+
+.note-completed .note-header h3 {
+  text-decoration: line-through;
+  color: #6b7280;
+}
+
+/* === FORMULARIOS === */
+.sticky-form {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: var(--sticky-shadow-lg);
+  padding: 1.5rem;
+  max-width: 500px;
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--sticky-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-error {
+  color: var(--sticky-error);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* === MODAL === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 640px) {
+  .sticky-agenda-board {
+    padding: 0.5rem;
+  }
+
+  .notes-list {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .sticky-note {
+    max-width: none;
+  }
+  
+  .note-actions {
+    opacity: 1; /* Siempre visible en móvil */
+  }
+  
+  .action-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Modal fullscreen en móvil */
+  .modal-overlay {
+    padding: 0;
+  }
+  
+  .modal-content {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .sticky-form {
+    border-radius: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Filtros colapsados por defecto en móvil */
+  .filters-content {
+    display: none;
+  }
+  
+  .filters-content.show {
+    display: block;
+  }
+}
+
+/* === ANIMACIONES === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -10px, 0);
+  }
+  70% {
+    transform: translate3d(0, -5px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease;
+}
+
+.bounce {
+  animation: bounce 1s ease;
+}
+
+/* === UTILIDADES === */
+.cursor-grab {
+  cursor: grab;
+}
+
+.cursor-grabbing {
+  cursor: grabbing;
+}
+
+.select-none {
+  user-select: none;
+}
+
+.select-text {
+  user-select: text;
+}
+
+/* Scroll personalizado */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* === TOOLTIPS === */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1f2937;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.tooltip:hover::before {
+  opacity: 1;
+}
+
+/* === LOADING === */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 50%;
+  border-top-color: var(--sticky-primary);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* === ACCESIBILIDAD === */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus visible para navegación por teclado */
+.sticky-note:focus-visible,
+.action-btn:focus-visible,
+.form-input:focus-visible,
+.form-textarea:focus-visible,
+.form-select:focus-visible {
+  outline: 2px solid var(--sticky-primary);
+  outline-offset: 2px;
+}
