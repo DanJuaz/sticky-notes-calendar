@@ -330,7 +330,7 @@ class NoteRenderer {
             'hace un tiempo';
 
         return `
-            <div class="note-footer text-xs text-gray-400 mb-2">
+            <div class="note-footer text-xs text-gray-50 mb-2">
                 <div class="flex items-center justify-between">
                     <span>${this.config.getText('createdAgo')} ${createdAgo}</span>
                     ${note.status === 'completed' && note.completedAt ? `
@@ -348,9 +348,7 @@ class NoteRenderer {
     /**
      * Renderiza las acciones de la nota
      */
-    renderNoteActions(note) {
-        const isCompleted = note.status === 'completed';
-        
+    renderNoteActions() {
         return `
             <div class="note-actions flex items-center justify-end space-x-2 pt-2 border-t border-gray-100">
             </div>
